@@ -4,7 +4,7 @@ const itemList = document.getElementById('item-list');
 const clearAllBtn = document.getElementById('clear');
 const filter = document.getElementById('filter');
 
-const addItem = (e) => {
+const onAddItemSubmit = (e) => {
 	e.preventDefault();
 
 	const newItem = itemInput.value;
@@ -14,8 +14,16 @@ const addItem = (e) => {
 		return;
 	}
 
+	addItemToDOM(newItem);
+
+	checkUI();
+	itemInput.value = '';
+	addItemToStorage(newItem);
+};
+
+const addItemToDOM = (item) => {
 	const li = document.createElement('li');
-	li.appendChild(document.createTextNode(newItem));
+	li.appendChild(document.createTextNode(item));
 
 	const btn = createButton('remove-item btn-link text-red');
 	li.appendChild(btn);
@@ -23,9 +31,20 @@ const addItem = (e) => {
 	btn.appendChild(icon);
 
 	itemList.appendChild(li);
+};
 
-	checkUI();
-	itemInput.value = '';
+const addItemToStorage = (item) => {
+	let itemsFromStorage;
+
+	if (localStorage.getItem('items') === null) {
+		itemsFromStorage = [];
+	} else {
+		itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+	}
+
+	itemsFromStorage.push(item);
+
+	localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 };
 
 const createButton = (classes) => {
@@ -85,7 +104,7 @@ const checkUI = () => {
 };
 
 // Event Listeners
-itemForm.addEventListener('submit', addItem);
+itemForm.addEventListener('submit', onAddItemSubmit);
 itemList.addEventListener('click', removeItem);
 clearAllBtn.addEventListener('click', removeAll);
 filter.addEventListener('input', filterItems);
