@@ -71,13 +71,27 @@ const getItemsFromStorage = () => {
 	return itemsFromStorage;
 };
 
-const removeItem = (e) => {
+const onClickItem = (e) => {
 	if (e.target.parentElement.classList.contains('remove-item')) {
-		if (confirm('Are you sure?!')) {
-			e.target.parentElement.parentElement.remove();
-		}
+		removeItem(e.target.parentElement.parentElement);
 	}
+};
+
+const removeItem = (item) => {
+	if (confirm('Are you sure?!')) {
+		item.remove();
+
+		removeItemFromStorage(item.textContent);
+	}
+
 	checkUI();
+};
+
+const removeItemFromStorage = (item) => {
+	let itemsFromStorage = getItemsFromStorage();
+	itemsFromStorage = itemsFromStorage.filter((fi) => fi !== item);
+
+	localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 };
 
 const removeAll = (e) => {
@@ -86,7 +100,9 @@ const removeAll = (e) => {
 		lis.forEach((li) => {
 			li.remove();
 		});
+		localStorage.clear();
 	}
+
 	checkUI();
 };
 
@@ -118,7 +134,7 @@ const checkUI = () => {
 const init = () => {
 	// Event Listeners
 	itemForm.addEventListener('submit', onAddItemSubmit);
-	itemList.addEventListener('click', removeItem);
+	itemList.addEventListener('click', onClickItem);
 	clearAllBtn.addEventListener('click', removeAll);
 	filter.addEventListener('input', filterItems);
 	document.addEventListener('DOMContentLoaded', displayItems);
