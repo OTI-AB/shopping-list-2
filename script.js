@@ -22,6 +22,19 @@ const onAddItemSubmit = (e) => {
 		return;
 	}
 
+	if (isEditMode) {
+		const itemToEdit = itemList.querySelector('.edit-mode');
+
+		removeItemFromStorage(itemToEdit.textContent);
+		itemToEdit.classList.remove('edit-mode');
+
+		console.log(itemToEdit);
+
+		itemToEdit.remove();
+
+		isEditMode = false;
+	}
+
 	addItemToDOM(newItem);
 
 	checkUI();
@@ -91,11 +104,17 @@ const setItemToEdit = (item) => {
 		.forEach((i) => i.classList.remove('edit-mode'));
 
 	item.classList.add('edit-mode');
-	formBtn.innerHTML = '<i class="fa-solid fa-edit"> </i> Edit Item ';
-	formBtn.style.backgroundColor = 'green';
-	formBtn.style.color = 'yellow';
+	configEditBtn();
 
 	itemInput.value = item.textContent;
+};
+
+const configEditBtn = () => {
+	if (isEditMode) {
+		formBtn.innerHTML = '<i class="fa-solid fa-edit"> </i> Edit Item ';
+		formBtn.style.backgroundColor = 'green';
+		formBtn.style.color = 'yellow';
+	}
 };
 
 const removeItem = (item) => {
@@ -142,6 +161,8 @@ const filterItems = (e) => {
 };
 
 const checkUI = () => {
+	itemInput.value = '';
+
 	const lis = document.querySelectorAll('li');
 	if (lis.length === 0) {
 		clearAllBtn.style.display = 'none';
@@ -150,6 +171,10 @@ const checkUI = () => {
 		clearAllBtn.style.display = 'block';
 		filter.style.display = 'block';
 	}
+
+	formBtn.innerHTML = '<i class="fa-solid fa-plus"> </i> Edit Item ';
+	formBtn.style.backgroundColor = 'black';
+	formBtn.style.color = 'white';
 };
 
 const init = () => {
