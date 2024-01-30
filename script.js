@@ -5,6 +5,7 @@ const clearAllBtn = document.getElementById('clear');
 const filter = document.getElementById('filter');
 const formBtn = itemForm.querySelector('button');
 let isEditMode = false;
+let isDuplicate = false;
 
 const displayItems = () => {
 	const itemsFromStorage = getItemsFromStorage();
@@ -28,11 +29,15 @@ const onAddItemSubmit = (e) => {
 		removeItemFromStorage(itemToEdit.textContent);
 		itemToEdit.classList.remove('edit-mode');
 
-		console.log(itemToEdit);
-
 		itemToEdit.remove();
 
 		isEditMode = false;
+	}
+
+	checkForDuplicate(newItem);
+
+	if (isDuplicate) {
+		return;
 	}
 
 	addItemToDOM(newItem);
@@ -94,6 +99,19 @@ const onClickItem = (e) => {
 	} else {
 		setItemToEdit(e.target);
 	}
+};
+
+const checkForDuplicate = (item) => {
+	isDuplicate = false;
+	const lis = itemList.querySelectorAll('li');
+	lis.forEach((i) => {
+		let iLower = i.firstChild.textContent.toLowerCase();
+
+		if (iLower === item.toLowerCase()) {
+			isDuplicate = true;
+			alert('This item is already in you list');
+		}
+	});
 };
 
 const setItemToEdit = (item) => {
